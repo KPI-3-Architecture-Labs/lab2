@@ -22,6 +22,9 @@ func main() {
 	//       }
 	//       err := handler.Compute()
 
-	res, _ := lab2.PrefixToPostfix("+ 2 2")
-	fmt.Println(res)
+	res, _ := lab2.CalculatePostfix("2 2 +")
+	fmt.Println("Results:", res)
+
+	res1, _ := lab2.CalculatePostfix("4 2 - 3 * 5 +")
+	fmt.Println("Results:", res1)
 }
