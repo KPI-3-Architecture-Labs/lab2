@@ -4,12 +4,32 @@ import (
 	"fmt"
 	"testing"
 
-	_ "gopkg.in/check.v1"
+	. "gopkg.in/check.v1"
 )
 
-func TestPrefixToPostfix(t *testing.T) {}
+func Test(t *testing.T) {
+	TestingT(t)
+}
 
-func ExamplePrefixToPostfix() {
-	res, _ := PrefixToPostfix("+ 2 2")
+type MySuite struct{}
+
+var _ = Suite(&MySuite{})
+
+func (s *MySuite) TestCalculatePostfix(cs *C) {
+	result, err := CalculatePostfix("2 2 +")
+	cs.Assert(result, Equals, "4")
+
+	result, err = CalculatePostfix("4 5 + 5 *")
+	cs.Assert(result, Equals, "45")
+
+	result, err = CalculatePostfix("4 2 - 3 * 5 +")
+	cs.Assert(result, Equals, "11")
+
+	result, err = CalculatePostfix("--4 2 - 3bd * 5 +")
+	cs.Assert(err, ErrorMatches, "invalid expression: not enough operands")
+}
+
+func ExampleCalculatePostfix() {
+	res, _ := CalculatePostfix("2 2 +")
 	fmt.Println(res)
 }
