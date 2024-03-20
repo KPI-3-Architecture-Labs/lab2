@@ -3,28 +3,81 @@ package main
 import (
 	"flag"
 	"fmt"
-	lab2 "github.com/KPI-3-Architecture-Labs/lab2"
+	"github.com/KPI-3-Architecture-Labs/lab2"
+	"io"
+	"log"
+	"os"
+	"strings"
 )
 
 var (
 	inputExpression = flag.String("e", "", "Expression to compute")
-	// TODO: Add other flags support for input and output configuration.
+	inputFile       = flag.String("f", "", "File with expression to compute")
+	outputFile      = flag.String("o", "", "File to store computed expression")
 )
 
 func main() {
 	flag.Parse()
 
-	// TODO: Change this to accept input from the command line arguments as described in the task and
-	//       output the results using the ComputeHandler instance.
-	//       handler := &lab2.ComputeHandler{
-	//           Input: {construct io.Reader according the command line parameters},
-	//           Output: {construct io.Writer according the command line parameters},
-	//       }
-	//       err := handler.Compute()
+	if *inputExpression == "" && *inputFile == "" {
+		log.Fatal("no expression provided.")
+	}
 
-	res, _ := lab2.CalculatePostfix("2 2 +")
-	fmt.Println("Results:", res)
+	if *inputExpression != "" && *inputFile != "" {
+		log.Fatal("flags -e and -f can't both be used")
+	}
 
-	res1, _ := lab2.CalculatePostfix("4 2 - 3 * 5 +")
-	fmt.Println("Results:", res1)
+	var reader io.Reader
+
+	if *inputExpression != "" {
+		reader = strings.NewReader(*inputExpression)
+	} else {
+		file, err := os.Open(*inputFile)
+		if err != nil {
+			log.Fatal("no file found")
+		}
+		reader = file
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				log.Fatal("Error closing file")
+			}
+		}(file)
+	}
+
+	var writer io.Writer
+
+	if *outputFile != "" {
+		file, err := os.Create(*outputFile)
+		if err != nil {
+			log.Fatal("something went wrong while creating file")
+		}
+		writer = file
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				log.Fatal("Error closing file")
+			}
+		}(file)
+	} else {
+		writer = &Writer{}
+	}
+
+	handler := &lab2.ComputeHandler{
+		Input:  reader,
+		Output: writer,
+	}
+
+	err := handler.Compute()
+
+	if err != nil {
+		fmt.Errorf("invalid input")
+	}
+}
+
+type Writer struct{}
+
+func (w *Writer) Write(data []byte) (n int, err error) {
+	fmt.Println(string(data))
+	return len(data), nil
 }
