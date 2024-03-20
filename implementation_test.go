@@ -57,7 +57,7 @@ func (s *MySuite) TestCalculatePostfixOperandsError(cs *C) {
 
 func (s *MySuite) TestCalculatePostfixSymbolError1(cs *C) {
 	_, err := CalculatePostfix("--4 2 - 3bd * 5 +")
-	cs.Assert(err, ErrorMatches, "invalid expression: unsupported ssymbol")
+	cs.Assert(err, ErrorMatches, "invalid expression: unsupported symbol")
 }
 
 func (s *MySuite) TestCalculatePostfixSymbolError2(cs *C) {
