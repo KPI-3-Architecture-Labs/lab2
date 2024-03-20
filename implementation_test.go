@@ -25,6 +25,9 @@ func (s *MySuite) TestCalculatePostfix(cs *C) {
 	result, err = CalculatePostfix("4 2 - 3 * 5 +")
 	cs.Assert(result, Equals, "11")
 
+	result, err = CalculatePostfix("2 3 ^ 2 + 2 *")
+	cs.Assert(result, Equals, "20")
+
 	result, err = CalculatePostfix("--4 2 - 3bd * 5 +")
 	cs.Assert(err, ErrorMatches, "invalid expression: not enough operands")
 }

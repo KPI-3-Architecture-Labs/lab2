@@ -20,6 +20,13 @@ func CalculatePostfix(input string) (string, error) {
 			}
 			return a / b
 		},
+		"^": func(a, b int) int {
+			result := 1
+			for i := 0; i < b; i++ {
+				result *= a
+			}
+			return result
+		},
 	}
 
 	tokens := strings.Fields(input)
