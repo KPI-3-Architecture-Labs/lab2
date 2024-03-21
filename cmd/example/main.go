@@ -69,9 +69,8 @@ func main() {
 	}
 
 	err := handler.Compute()
-
 	if err != nil {
-		fmt.Errorf("invalid input")
+		log.Fatal("Error, ", err)
 	}
 }
 
